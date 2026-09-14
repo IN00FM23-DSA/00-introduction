@@ -1,0 +1,46 @@
+name: Classroom CI (reusable, canonical logic)
+
+# This is the ONLY copy of this file that matters -- student repos call
+# it via `uses: IN00FM23-DSA/00-introduction/.github/workflows/reusable-ci.yml@main`
+# from their own thin classroom-ci.yml. Whatever a student edits in
+# THEIR repo's copy of this file (if they even have one, e.g. right
+# after "use this template") has zero effect, since GitHub always
+# fetches the reusable workflow's steps from this canonical repo at the
+# pinned ref, not from the caller. See RISKS.md #1 and #13.
+
+on:
+  workflow_call:
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3   # overall safety net -- see RISKS.md #12
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Restore canonical tests, helpers, points, and scorer
+        run: |
+          git clone --depth 1 https://github.com/IN00FM23-DSA/00-introduction.git __canonical
+          rm -f test_*.py
+          cp __canonical/test_*.py .
+          cp __canonical/_helpers.py .
+          cp __canonical/points.json .
+          cp __canonical/score.py .
+          cp __canonical/requirements.txt .
+          rm -rf __canonical
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run tests
+        run: pytest -v --junitxml=report.xml
+        continue-on-error: true
+        timeout-minutes: 2   # a hung/malicious exercise file gets killed here, leaving headroom in the 3-minute job budget for checkout/setup/install/score
+
+      - name: Score
+        run: python score.py

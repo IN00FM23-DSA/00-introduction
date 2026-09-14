@@ -1,44 +1,21 @@
 name: Classroom CI (provisional)
 
-# This is Tier-1 feedback only — fast and free, but not authoritative.
-# A student with push access to this repo could edit this file to fake
-# a result, so the recorded grade always comes from a teacher running
-# 04-collect-grades.ps1 against the canonical template instead. See
-# organization/RISKS.md #1 in the course-org-setup docs.
+# This file is deliberately a thin, near-empty wrapper. All the actual
+# logic (restore canonical files, run pytest, score) lives in
+# reusable-ci.yml INSIDE THE CANONICAL TOPIC REPO, called via
+# `uses:` below at a pinned ref -- a student editing THIS file (their
+# own copy, in their own repo) can change what gets called, but cannot
+# change what the call itself runs, since that always comes from the
+# canonical repo they don't have push access to. See RISKS.md #13:
+# this doesn't stop a student from deleting this file and writing their
+# own from scratch, but it means the honest, default path exposes no
+# scoring/restore logic to edit at all, and any tamper attempt is a
+# full-file rewrite rather than a subtle one-line edit -- much easier
+# to notice in a diff against the canonical template.
 
 on:
   push:
 
 jobs:
   pytest:
-    runs-on: ubuntu-latest
-    timeout-minutes: 3   # overall safety net -- see RISKS.md #12
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Restore canonical tests, helpers, points, and scorer
-        run: |
-          git clone --depth 1 https://github.com/IN00FM23-DSA/00-introduction.git __canonical
-          rm -f test_*.py
-          cp __canonical/test_*.py .
-          cp __canonical/_helpers.py .
-          cp __canonical/points.json .
-          cp __canonical/score.py .
-          cp __canonical/requirements.txt .
-          rm -rf __canonical
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-
-      - name: Run tests
-        run: pytest -v --junitxml=report.xml
-        continue-on-error: true
-        timeout-minutes: 2   # a hung/malicious exercise file gets killed here, leaving headroom in the 3-minute job budget for checkout/setup/install/score
-
-      - name: Score
-        run: python score.py
+    uses: IN00FM23-DSA/00-introduction/.github/workflows/reusable-ci.yml@main
