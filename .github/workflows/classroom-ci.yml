@@ -41,6 +41,7 @@ jobs:
         continue-on-error: true
         run: |
           mkdir -p /tmp/report
+          chmod 777 /tmp/report   # the container writes report.xml here as UID 65532, not the runner's own user
           docker run --rm \
             --network none \
             --memory 256m --cpus 1 --pids-limit 128 \
