@@ -1,0 +1,42 @@
+name: Classroom CI (provisional)
+
+# This is Tier-1 feedback only — fast and free, but not authoritative.
+# A student with push access to this repo could edit this file to fake
+# a result, so the recorded grade always comes from a teacher running
+# 04-collect-grades.ps1 against the canonical template instead. See
+# organization/RISKS.md #1 in the course-org-setup docs.
+
+on:
+  push:
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Restore canonical tests, helpers, points, and scorer
+        run: |
+          git clone --depth 1 https://github.com/IN00FM23-DSA/00-introduction.git __canonical
+          rm -f test_*.py
+          cp __canonical/test_*.py .
+          cp __canonical/_helpers.py .
+          cp __canonical/points.json .
+          cp __canonical/score.py .
+          cp __canonical/requirements.txt .
+          rm -rf __canonical
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run tests
+        run: pytest -v --junitxml=report.xml
+        continue-on-error: true
+
+      - name: Score
+        run: python score.py
