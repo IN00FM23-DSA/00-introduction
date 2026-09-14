@@ -53,7 +53,7 @@ jobs:
             -v "$PWD:/work:ro" \
             -v /tmp/report:/report:rw \
             classroom-grader \
-            -q -p no:cacheprovider --junitxml=/report/report.xml
+            -q -p no:cacheprovider --junitxml=/report/report.xml || true
           cp /tmp/report/report.xml report.xml || true
 
       - name: Score
