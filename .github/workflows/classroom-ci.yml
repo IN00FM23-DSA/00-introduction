@@ -12,6 +12,7 @@ on:
 jobs:
   pytest:
     runs-on: ubuntu-latest
+    timeout-minutes: 10   # overall safety net -- see RISKS.md #12
     steps:
       - uses: actions/checkout@v4
 
@@ -37,6 +38,7 @@ jobs:
       - name: Run tests
         run: pytest -v --junitxml=report.xml
         continue-on-error: true
+        timeout-minutes: 3   # a hung/malicious exercise file gets killed here, not left to burn the full job budget
 
       - name: Score
         run: python score.py
