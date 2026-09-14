@@ -8,13 +8,13 @@ descriptions.
 
 | Exercise | File | Points |
 |---|---|---|
-| 1 | `01_find_largest.py` | 2 |
-| 2 | `02_sort_names.py` | 2 |
+| 1 | `01_find_largest.py` | 1 |
+| 2 | `02_sort_names.py` | 1 |
 | 3 | `03_even_or_odd.py` | 1 |
-| 4 | `04_count_words.py` | 2 |
-| 5 | `05_average_grades.py` | 2 |
-| 6 | `07_fibonacci.py` | 2 |
-| 7 | `08_caesar_cipher.py` | 3 |
+| 4 | `04_count_words.py` | 1 |
+| 5 | `05_average_grades.py` | 1 |
+| 6 | `07_fibonacci.py` | 1 |
+| 7 | `08_caesar_cipher.py` | 1 |
 
 Each exercise file has a function with `# YOUR CODE HERE` for you to fill
 in, and a matching `test_*.py` file you can use to check your work as you
