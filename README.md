@@ -1,25 +1,126 @@
 # 00-introduction
 
-Welcome! This topic has one or more small Python exercises to work through.
-See [`00_introduction.md`](00_introduction.md) for the full exercise
-descriptions.
+These are warm-up exercises. Exercises 1–5 are small, everyday problems
+that Python's built-in functions solve in a single line — the goal is
+to find the simplest built-in function for the job. Exercises 6–7 have
+no such built-in, so write out the simple step-by-step algorithm
+yourself.
 
 ## The exercises
 
-| Exercise | File | Points |
-|---|---|---|
-| 1 | `01_find_largest.py` | 1 |
-| 2 | `02_sort_names.py` | 1 |
-| 3 | `03_even_or_odd.py` | 1 |
-| 4 | `04_count_words.py` | 1 |
-| 5 | `05_average_grades.py` | 1 |
-| 6 | `07_fibonacci.py` | 1 |
-| 7 | `08_caesar_cipher.py` | 1 |
+| Exercise | File | Difficulty | Points |
+|---|---|---|---|
+| 1 | `01_find_largest.py` | Easy | 1 |
+| 2 | `02_sort_names.py` | Easy | 1 |
+| 3 | `03_even_or_odd.py` | Easy | 1 |
+| 4 | `04_count_words.py` | Easy | 1 |
+| 5 | `05_average_grades.py` | Easy | 1 |
+| 6 | `07_fibonacci.py` | Easy | 1 |
+| 7 | `08_caesar_cipher.py` | Challenging | 1 |
 
 Each exercise file has a function with `# YOUR CODE HERE` for you to fill
 in, and a matching `test_*.py` file you can use to check your work as you
 go. You don't need to touch the test files — they're just there to help
 you see how you're doing.
+
+---
+
+## Exercise 1 — Find the Largest Number `(Easy)`
+
+Implement `find_largest(numbers)` that returns the biggest value in a list.
+
+**Hint:** one built-in function does exactly this.
+
+**Example:**
+```
+find_largest([3, 7, 2, 9, 4])  →  9
+```
+
+---
+
+## Exercise 2 — Sort Names Alphabetically `(Easy)`
+
+Implement `sort_names(names)` that returns a new list of strings in alphabetical order.
+
+**Hint:** one built-in function returns a sorted copy of any list.
+
+**Example:**
+```
+sort_names(["Charlie", "Alice", "Bob", "Diana"])  →  ['Alice', 'Bob', 'Charlie', 'Diana']
+```
+
+---
+
+## Exercise 3 — Even or Odd `(Easy)`
+
+Implement `even_or_odd(n)` that returns the string `"even"` or `"odd"`.
+
+**Hint:** use the remainder operator `%` in a conditional expression: `n % 2 == 0` means the number is even.
+
+**Example:**
+```
+even_or_odd(42)  →  "even"
+even_or_odd(7)   →  "odd"
+```
+
+---
+
+## Exercise 4 — Count Words `(Easy)`
+
+Implement `count_words(sentence)` that returns how many words a sentence contains.
+
+**Hint:** `str.split()` turns a sentence into a list of words; another built-in tells you how many items are in a list.
+
+**Example:**
+```
+count_words("Hello world this is Python")  →  5
+```
+
+---
+
+## Exercise 5 — Average Grade `(Easy)`
+
+Implement `average_grades(grades)` that returns the average of a list of numbers.
+
+**Hint:** one built-in adds up a list; another gives you its length.
+
+**Example:**
+```
+average_grades([85, 92, 78, 90, 88])  →  86.6
+```
+
+---
+
+## Exercise 6 — Fibonacci Sequence `(Easy)`
+
+Implement `fibonacci(n)` that returns the first `n` numbers of the Fibonacci sequence, where each number is the sum of the two before it.
+
+**Rules:**
+- Start the list with `[0, 1]`.
+- Keep appending `sequence[-1] + sequence[-2]` until the list has `n` elements.
+
+**Example:**
+```
+fibonacci(8)  →  [0, 1, 1, 2, 3, 5, 8, 13]
+```
+
+---
+
+## Exercise 7 — Caesar Cipher `(Challenging)`
+
+Implement `caesar_cipher(text, shift)` that encodes a message by shifting every letter forward by `shift` positions in the alphabet, wrapping back to `'a'`/`'A'` after `'z'`/`'Z'`.
+
+**Rules:**
+- Only shift letters (`char.isalpha()`); leave spaces, digits, and punctuation unchanged.
+- Keep uppercase letters uppercase and lowercase letters lowercase.
+- For each letter: `chr((ord(char) - base + shift) % 26 + base)`, where `base` is `ord('A')` or `ord('a')` depending on case.
+
+**Example:**
+```
+caesar_cipher("Hello World", 3)  →  "Khoor Zruog"
+```
+
+---
 
 ## Step by step
 
