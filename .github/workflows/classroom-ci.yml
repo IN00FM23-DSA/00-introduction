@@ -5,10 +5,6 @@ name: Classroom CI (provisional)
 # a result, so the recorded grade always comes from a teacher running
 # 04-collect-grades.ps1 against the canonical template instead. See
 # organization/RISKS.md #1 in the course-org-setup docs.
-#
-# Tests run inside a locked-down, disposable Docker container (no
-# network, read-only filesystem, non-root, resource-capped) rather than
-# directly on the runner's own filesystem -- see RISKS.md #10.
 
 on:
   push:
@@ -20,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Restore canonical tests, helpers, points, scorer, and sandbox image
+      - name: Restore canonical tests, helpers, points, and scorer
         run: |
           git clone --depth 1 https://github.com/IN00FM23-DSA/00-introduction.git __canonical
           rm -f test_*.py
@@ -29,32 +25,20 @@ jobs:
           cp __canonical/points.json .
           cp __canonical/score.py .
           cp __canonical/requirements.txt .
-          cp __canonical/Dockerfile .
           rm -rf __canonical
 
-      - name: Build sandbox image
-        timeout-minutes: 2   # pulling the base image cold can take a while; not student-controlled, so not the security-critical timeout
-        run: docker build -t classroom-grader .
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
 
-      - name: Run tests (sandboxed — no network, read-only, non-root, resource-capped)
-        timeout-minutes: 1   # this is the one that matters -- a hung/malicious exercise file gets killed here
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run tests
+        run: pytest -v --junitxml=report.xml
         continue-on-error: true
-        run: |
-          mkdir -p /tmp/report
-          chmod 777 /tmp/report   # the container writes report.xml here as UID 65532, not the runner's own user
-          docker run --rm \
-            --network none \
-            --memory 256m --cpus 1 --pids-limit 128 \
-            --read-only \
-            --tmpfs /tmp:rw,noexec,nosuid,size=64m \
-            --user 65532:65532 \
-            --workdir /work \
-            -e PYTHONDONTWRITEBYTECODE=1 \
-            -v "$PWD:/work:ro" \
-            -v /tmp/report:/report:rw \
-            classroom-grader \
-            -q -p no:cacheprovider --junitxml=/report/report.xml || true
-          cp /tmp/report/report.xml report.xml || true
+        timeout-minutes: 2   # a hung/malicious exercise file gets killed here, leaving headroom in the 3-minute job budget for checkout/setup/install/score
 
       - name: Score
-        run: python3 score.py
+        run: python score.py
